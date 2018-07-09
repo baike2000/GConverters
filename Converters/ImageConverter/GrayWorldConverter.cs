@@ -20,7 +20,7 @@ namespace Converters.ImageConverter
         }
         public T Convert(T source, params object[] prms)
         {
-            if (prms.Length == 0)
+            if (prms.Length > 0)
                 throw new Exception("Не должно быть параметров");
             var dist = new MyImage(source.Width, source.Height);
             double Ra = 0, Ba = 0, Ga = 0;

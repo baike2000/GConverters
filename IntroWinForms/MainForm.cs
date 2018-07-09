@@ -55,7 +55,7 @@ namespace IntroWinForms
             var lst = new List<ListBoxItem>();
             foreach(var conv in _converters)
             {
-                lst.Add(new ListBoxItem() {Name = conv.Value.Item1.Name, Value = conv.Value.Item1.ConverterType});
+                lst.Add(new ListBoxItem {Name = conv.Value.Item1.Name, Value = conv.Value.Item1.ConverterType});
             }
             lstConverts.DataSource = lst;
             lstConverts.DisplayMember = "Name";
