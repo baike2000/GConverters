@@ -17,7 +17,10 @@ namespace Converters.ImageConverter
         {
             NumberOfParams = 1;
             TypeOfParams = typeof(int);
-            Name = "Оттенки серого";
+            Name = "Черно-белый рисунок";
+            ConverterType = ConverterEnum.Binary;
+            ParamNames = new List<string>() {"Граница"};
+
         }
         public T Convert(T source, params object[] prms)
         {

@@ -16,6 +16,7 @@ namespace Converters.ImageConverter
         public GrayscaleConverter():base()
         {
             Name = "Оттенки серого";
+            ConverterType = ConvertInterfaces.Enum.ConverterEnum.GrayScale;
         }
         public T Convert(T source, params object[] prms)
         {

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Converters.Exceptions;
 using Converters.Image;
+using ConvertInterfaces;
 
 namespace Converters.ImageConverter
 {
@@ -17,6 +18,9 @@ namespace Converters.ImageConverter
         {
             NumberOfParams = 2;
             TypeOfParams = typeof(double);
+            ConverterType = ConvertInterfaces.Enum.ConverterEnum.NonLinear;
+            Name = "Нелинейная коррекция";
+            ParamNames = new List<string>() { "С", "Альфа" };
         }
         public T Convert(T source, params object[] prms)
         {

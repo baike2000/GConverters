@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Converters.Exceptions;
 using Converters.Image;
+using ConvertInterfaces;
 
 namespace Converters.ImageConverter
 {
@@ -18,6 +19,8 @@ namespace Converters.ImageConverter
             NumberOfParams = 1;
             TypeOfParams = typeof(double);
             Name = "Логарифмическая коррекция";
+            ConverterType = ConvertInterfaces.Enum.ConverterEnum.Logaritm;
+            ParamNames = new List<string>() {"С"};
         }
 
         public T Convert(T source, params object[] prms)

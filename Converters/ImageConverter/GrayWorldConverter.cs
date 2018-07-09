@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Converters.Image;
+using ConvertInterfaces;
 
 namespace Converters.ImageConverter
 {
@@ -15,6 +16,7 @@ namespace Converters.ImageConverter
             NumberOfParams = 0;
             TypeOfParams = null;
             Name = "Серый мир";
+            ConverterType = ConvertInterfaces.Enum.ConverterEnum.GrayWorld;
         }
         public T Convert(T source, params object[] prms)
         {

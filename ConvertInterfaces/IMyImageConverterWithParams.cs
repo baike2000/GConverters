@@ -9,10 +9,11 @@ namespace ConvertInterfaces
 {
     public interface IMyImageConverterWithParams<T> where T : IMyImage
     {
-        int ConverterType { get; } 
+        ConverterEnum ConverterType { get; } 
         string Name { get; }
         int NumberOfParams { get; }
         Type TypeOfParams { get; }
+        List<string> ParamNames { get; }
         T Convert(T source, params object[] prms);
     }
 }

@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using IntroWinForms.Enum;
-using IntroWinForms.Image;
-using IntroWinForms.ImageConverter;
-using IntroWinForms.Exceptions;
+using Converters.Exceptions;
+using Converters.Image;
+using Converters.ImageConverter;
+using ConvertInterfaces;
+using ConvertInterfaces.Enum;
 
 namespace IntroWinForms
 {
@@ -22,6 +23,11 @@ namespace IntroWinForms
         {
             InitializeComponent();
             ListLoad();
+        }
+
+        private void CreateControls()
+        {
+
         }
 
         private void ListLoad()
@@ -46,14 +52,11 @@ namespace IntroWinForms
                 new Tuple<MyImageConverter<IMyImage>, List<Control>>(
                     new BinaryConverter<IMyImage>(), 
                     new List<Control> { txtC, lblC }));
-            var lst = new List<ListBoxItem>()
+            var lst = new List<ListBoxItem>();
+            foreach(var conv in _converters)
             {
-                new ListBoxItem() {Name = "Оттенки серого", Value = ConverterEnum.GrayScale},
-                new ListBoxItem() {Name = "Серый мир", Value = ConverterEnum.GrayWorld},
-                new ListBoxItem() {Name = "Нелинейная коррекция", Value = ConverterEnum.NonLinear},
-                new ListBoxItem() {Name = "Логарифмическая коррекция", Value = ConverterEnum.Logaritm},
-                new ListBoxItem() {Name = "Черно белый рисунок", Value = ConverterEnum.Binary},
-            };
+                lst.Add(new ListBoxItem() {Name = conv.Value.Item1.Name, Value = conv.Value.Item1.ConverterType});
+            }
             lstConverts.DataSource = lst;
             lstConverts.DisplayMember = "Name";
             lstConverts.ValueMember = "Value";

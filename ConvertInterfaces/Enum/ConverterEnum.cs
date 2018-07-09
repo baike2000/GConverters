@@ -8,6 +8,7 @@ namespace ConvertInterfaces.Enum
 {
     public enum ConverterEnum
     {
+        None,
         GrayScale,
         GrayWorld,
         NonLinear,
