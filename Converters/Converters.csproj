@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Exceptions\BoundException.cs" />
     <Compile Include="Exceptions\NumberOfArgsException.cs" />
+    <Compile Include="Helpers\DevideRange.cs" />
     <Compile Include="ImageConverter\BinaryConverter.cs" />
     <Compile Include="ImageConverter\GrayscaleConverter.cs" />
     <Compile Include="ImageConverter\GrayWorldConverter.cs" />

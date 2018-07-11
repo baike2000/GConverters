@@ -25,9 +25,20 @@ namespace IntroWinForms
             ListLoad();
         }
 
-        private void CreateControls()
+        private void CreateControls(IMyImageConverterWithParams<IMyImage> converter)
         {
-
+            for (int i = 0; i < converter.NumberOfParams; i++)
+            {
+                var lbl = new Label();
+                lbl.Text = converter.ParamNames[i];
+                lbl.Name = "lbl" + converter.ParamNames[i];
+                lbl.Visible = false;
+                var txtb = new TextBox();
+                txtb.Name = "txt" + converter.ParamNames[i];
+                txtb.Text = "";
+                txtb.Visible = false;
+                converter.Controls.AddRange(new Control[] {lbl, txtb});
+            }
         }
 
         private void ListLoad()
@@ -98,37 +109,21 @@ namespace IntroWinForms
                 {
                     if (converter is IMyImageConverterWithParams<IMyImage> @default)
                     {
-                        if (converter.NumberOfParams == 0)
+                        var cparams = new object[@default.NumberOfParams];
+                        foreach (var param in @default.Controls)
                         {
-                            var dst = @default.Convert(new MyImage(bitmap));
-                            dst.ConvertTo(dstbitmap);
-                        }
-                        if (converter.NumberOfParams == 2)
-                        {
-                            if (converter.TypeOfParams == typeof(double))
+                            int cnt = 0;
+                            if ((param is Control control))
                             {
-
-                                var c = Convert.ToDouble(txtC.Text);
-                                var gamma = Convert.ToDouble(txtGamma.Text);
-                                var dst = @default.Convert(new MyImage(bitmap), c, gamma);
-                                dst.ConvertTo(dstbitmap);
+                                if (!control.Name.StartsWith("lbl"))
+                                {
+                                    var cnv = new StringConverter();
+                                    cparams[cnt] = cnv.ConvertTo(control.Text, @default.TypeOfParams);
+                                    cnt++;
+                                }
                             }
                         }
-                        if (converter.NumberOfParams == 1)
-                        {
-                            if (converter.TypeOfParams == typeof(double))
-                            {
-                                var c = Convert.ToDouble(txtC.Text);
-                                var dst = @default.Convert(new MyImage(bitmap), c);
-                                dst.ConvertTo(dstbitmap);
-                            }
-                            if (converter.TypeOfParams == typeof(int))
-                            {
-                                var c = Convert.ToInt32(txtC.Text);
-                                var dst = @default.Convert(new MyImage(bitmap), c);
-                                dst.ConvertTo(dstbitmap);
-                            }
-                        }
+                        @default.Convert(new MyImage(bitmap), cparams);
                     }
                     pbxDest.Image?.Dispose();
                     pbxDest.Image = dstbitmap;
@@ -142,6 +137,10 @@ namespace IntroWinForms
                     MessageBox.Show(ex.Message);
                 }
                 catch (BoundException<double> ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }

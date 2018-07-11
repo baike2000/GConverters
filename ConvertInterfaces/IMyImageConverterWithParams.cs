@@ -15,5 +15,7 @@ namespace ConvertInterfaces
         Type TypeOfParams { get; }
         List<string> ParamNames { get; }
         T Convert(T source, params object[] prms);
+        List<object> Controls { get; }
+
     }
 }

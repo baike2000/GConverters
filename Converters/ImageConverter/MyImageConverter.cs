@@ -16,6 +16,7 @@ namespace Converters.ImageConverter
         public Type TypeOfParams { get; protected set; }
         public ConverterEnum ConverterType { get; protected set; }
         public List<string> ParamNames { get; protected set; }
+        public List<object> Controls { get; private set; }
 
         protected MyImageConverter()
         {
@@ -24,6 +25,7 @@ namespace Converters.ImageConverter
             Name = "Empty";
             ConverterType = ConverterEnum.None;
             ParamNames = new List<string>();
+            Controls = new List<object>();
         }
         protected virtual int Norm(double x)
         {

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Converters.Image;
 using ConvertInterfaces;
+using Converters.Helpers;
 
 namespace Converters.ImageConverter
 {
@@ -25,39 +26,19 @@ namespace Converters.ImageConverter
                 throw new Exception("Не должно быть параметров");
             var dist = new MyImage(source.Width, source.Height);
             object srcimg = source;
-            var tasks = new List<Task>
+            var tasks = new List<Task>();
+            var ranges = DivRange.Divide(0, 0, source.Width, source.Height, 16);
+            foreach(var range in ranges)
             {
-                Task.Run(() =>
-                    ChangeToGrayscale(
-                        (MyImage) srcimg,
-                        dist,
-                        0, 0,
-                        dist.Width / 2, dist.Height / 2)),
-                Task.Run(() =>
-                    ChangeToGrayscale(
-                        (MyImage) srcimg,
-                        dist,
-                        dist.Width / 2, 0,
-                        dist.Width, dist.Height / 2)),
-                Task.Run(() =>
-                    ChangeToGrayscale(
-                        (MyImage) srcimg,
-                        dist,
-                        0, dist.Height / 2,
-                        dist.Width / 2, dist.Height)),
-                Task.Run(() =>
-                    ChangeToGrayscale(
-                        (MyImage) srcimg,
-                        dist,
-                        dist.Width / 2, dist.Height / 2,
-                        dist.Width, dist.Height))
-            };
+                tasks.Add(Task.Run(() =>
+                    ChangeToGrayscale((MyImage) srcimg, dist, range[0], range[1], range[2], range[3])));
+            }
             Task.WaitAll(tasks.ToArray());
             object img = dist;
             return (T) img;
         }
 
-        private void ChangeToGrayscale(MyImage source, MyImage dist, int x1, int y1, int x2, int y2)
+        private void ChangeToGrayscale(IMyImage source, IMyImage dist, int x1, int y1, int x2, int y2)
         {
             for (int i = x1; i < x2; i++)
             {
