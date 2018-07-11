@@ -9,7 +9,7 @@ using ConvertInterfaces.Enum;
 
 namespace Converters.ImageConverter
 {
-    public abstract class MyImageConverter<T> where T : IMyImage
+    public abstract class MyImageConverter<T> where T : IMyImage, new()
     {
         public string Name { get; protected set; }
         public int NumberOfParams { get; protected set; }

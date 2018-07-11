@@ -11,7 +11,7 @@ using ConvertInterfaces;
 namespace Converters.ImageConverter
 {
     public class LogarithmConverter<T> : MyImageConverter<T>,
-        IMyImageConverterWithParams<T> where T : IMyImage
+        IMyImageConverterWithParams<T> where T : IMyImage, new()
 
     {
         public LogarithmConverter()

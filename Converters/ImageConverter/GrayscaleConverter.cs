@@ -12,7 +12,7 @@ namespace Converters.ImageConverter
 {
     public class GrayscaleConverter<T>
         : MyImageConverter<T>,
-            IMyImageConverterWithParams<T> where T : IMyImage
+            IMyImageConverterWithParams<T> where T : IMyImage, new()
     {
         public GrayscaleConverter():base()
         {

@@ -33,10 +33,7 @@
             this.btnConvert = new System.Windows.Forms.Button();
             this.pbxDest = new System.Windows.Forms.PictureBox();
             this.lstConverts = new System.Windows.Forms.ListBox();
-            this.txtC = new System.Windows.Forms.TextBox();
-            this.txtGamma = new System.Windows.Forms.TextBox();
-            this.lblC = new System.Windows.Forms.Label();
-            this.lblGamma = new System.Windows.Forms.Label();
+            this.pnlControls = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pbcSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxDest)).BeginInit();
             this.SuspendLayout();
@@ -87,53 +84,25 @@
             // lstConverts
             // 
             this.lstConverts.FormattingEnabled = true;
-            this.lstConverts.Location = new System.Drawing.Point(29, 94);
+            this.lstConverts.Location = new System.Drawing.Point(26, 94);
             this.lstConverts.Name = "lstConverts";
-            this.lstConverts.Size = new System.Drawing.Size(100, 160);
+            this.lstConverts.Size = new System.Drawing.Size(103, 160);
             this.lstConverts.TabIndex = 5;
             this.lstConverts.SelectedIndexChanged += new System.EventHandler(this.lstConverts_SelectedIndexChanged);
             // 
-            // txtC
+            // pnlControls
             // 
-            this.txtC.Location = new System.Drawing.Point(32, 297);
-            this.txtC.Name = "txtC";
-            this.txtC.Size = new System.Drawing.Size(100, 20);
-            this.txtC.TabIndex = 6;
-            // 
-            // txtGamma
-            // 
-            this.txtGamma.Location = new System.Drawing.Point(29, 353);
-            this.txtGamma.Name = "txtGamma";
-            this.txtGamma.Size = new System.Drawing.Size(100, 20);
-            this.txtGamma.TabIndex = 7;
-            // 
-            // lblC
-            // 
-            this.lblC.AutoSize = true;
-            this.lblC.Location = new System.Drawing.Point(29, 281);
-            this.lblC.Name = "lblC";
-            this.lblC.Size = new System.Drawing.Size(14, 13);
-            this.lblC.TabIndex = 8;
-            this.lblC.Text = "C";
-            // 
-            // lblGamma
-            // 
-            this.lblGamma.AutoSize = true;
-            this.lblGamma.Location = new System.Drawing.Point(29, 337);
-            this.lblGamma.Name = "lblGamma";
-            this.lblGamma.Size = new System.Drawing.Size(43, 13);
-            this.lblGamma.TabIndex = 9;
-            this.lblGamma.Text = "Gamma";
+            this.pnlControls.Location = new System.Drawing.Point(26, 275);
+            this.pnlControls.Name = "pnlControls";
+            this.pnlControls.Size = new System.Drawing.Size(102, 200);
+            this.pnlControls.TabIndex = 6;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(983, 488);
-            this.Controls.Add(this.lblGamma);
-            this.Controls.Add(this.lblC);
-            this.Controls.Add(this.txtGamma);
-            this.Controls.Add(this.txtC);
+            this.Controls.Add(this.pnlControls);
             this.Controls.Add(this.lstConverts);
             this.Controls.Add(this.pbxDest);
             this.Controls.Add(this.btnConvert);
@@ -144,7 +113,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pbcSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxDest)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -155,10 +123,7 @@
         private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.PictureBox pbxDest;
         private System.Windows.Forms.ListBox lstConverts;
-        private System.Windows.Forms.TextBox txtC;
-        private System.Windows.Forms.TextBox txtGamma;
-        private System.Windows.Forms.Label lblC;
-        private System.Windows.Forms.Label lblGamma;
+        private System.Windows.Forms.Panel pnlControls;
     }
 }
 

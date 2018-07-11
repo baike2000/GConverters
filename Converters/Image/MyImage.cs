@@ -38,6 +38,13 @@ namespace Converters.Image
             _image[x, y] = color;
             CheckMinMax(color);
         }
+
+        public MyImage()
+        {
+            Width = 0;
+            Height = 0;
+            _image = new Color[Width, Height];
+        }
         public MyImage(int width, int height)
         {
             Width = width;

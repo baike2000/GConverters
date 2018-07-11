@@ -11,7 +11,7 @@ using ConvertInterfaces;
 
 namespace Converters.ImageConverter
 {
-    public class BinaryConverter<T> : MyImageConverter<T>, IMyImageConverterWithParams<T> where T:IMyImage
+    public class BinaryConverter<T> : MyImageConverter<T>, IMyImageConverterWithParams<T> where T:IMyImage, new()
     {
         public BinaryConverter()
         {

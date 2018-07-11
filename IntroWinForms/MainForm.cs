@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,64 +18,91 @@ namespace IntroWinForms
 {
     public partial class MainForm : Form
     {
-        private readonly Dictionary<ConverterEnum, Tuple<MyImageConverter<IMyImage>, List<Control>>> _converters = 
-                                        new Dictionary<ConverterEnum, Tuple<MyImageConverter<IMyImage>, List<Control>>>();
+        private readonly Dictionary<ConverterEnum, IMyImageConverterWithParams<MyImage>> _converters = 
+                                        new Dictionary<ConverterEnum, IMyImageConverterWithParams<MyImage>>();
+        private IMyImageConverterWithParams<MyImage> _currentConverter = null;
         public MainForm()
         {
             InitializeComponent();
             ListLoad();
         }
 
-        private void CreateControls(IMyImageConverterWithParams<IMyImage> converter)
+        private void CreateControls(IMyImageConverterWithParams<MyImage> converter)
         {
             for (int i = 0; i < converter.NumberOfParams; i++)
             {
-                var lbl = new Label();
-                lbl.Text = converter.ParamNames[i];
-                lbl.Name = "lbl" + converter.ParamNames[i];
-                lbl.Visible = false;
-                var txtb = new TextBox();
-                txtb.Name = "txt" + converter.ParamNames[i];
-                txtb.Text = "";
-                txtb.Visible = false;
+                var lbl = new Label
+                {
+                    Text = converter.ParamNames[i],
+                    Name = "lbl" + converter.ParamNames[i],
+                    Visible = false
+                };
+                var txtb = new TextBox
+                {
+                    Name = "txt" + converter.ParamNames[i],
+                    Text = "",
+                    Visible = false
+                };
                 converter.Controls.AddRange(new Control[] {lbl, txtb});
+            }
+            PutControlsToPanel(converter.Controls.Select(x => x as Control).ToList());
+        }
+
+        private void PutControlsToPanel(List<Control> controls)
+        {
+            var x = 0;
+            var y = 0;
+            foreach (var control in controls)
+            {
+                control.Left = x + 5;
+                control.Top = y;
+                control.Width = 70;
+                control.Height = 12;
+                pnlControls.Controls.Add(control);
+                y += 17;
             }
         }
 
         private void ListLoad()
         {
-            _converters.Add(ConverterEnum.GrayScale, 
-                new Tuple<MyImageConverter<IMyImage>, List<Control>>(
-                    new GrayscaleConverter<IMyImage>(), 
-                    new List<Control>()));
-            _converters.Add(ConverterEnum.GrayWorld,
-                new Tuple<MyImageConverter<IMyImage>, List<Control>>(
-                    new GrayWorldConverter<IMyImage>(), 
-                    new List<Control>()));
-            _converters.Add(ConverterEnum.NonLinear,
-                new Tuple<MyImageConverter<IMyImage>, List<Control>>(
-                    new NonLinearConverter<IMyImage>(), 
-                    new List<Control> { txtC, lblC, txtGamma, lblGamma }));
-            _converters.Add(ConverterEnum.Logaritm,
-                new Tuple<MyImageConverter<IMyImage>, List<Control>>(
-                    new LogarithmConverter<IMyImage>(), 
-                    new List<Control> { txtC, lblC }));
-            _converters.Add(ConverterEnum.Binary,
-                new Tuple<MyImageConverter<IMyImage>, List<Control>>(
-                    new BinaryConverter<IMyImage>(), 
-                    new List<Control> { txtC, lblC }));
+            Assembly pluginAssembly = Assembly.GetAssembly(typeof(MyImageConverter<MyImage>));
+            var converters = new List<Type>();
+            foreach (var tp in pluginAssembly.DefinedTypes)
+            {
+                foreach (var intr in tp.ImplementedInterfaces)
+                {
+                    if (intr.ToString() == typeof(IMyImageConverterWithParams<>).ToString())
+                        converters.Add(tp);
+                }
+            }
+//            var converters = pluginAssembly.DefinedTypes
+                                           //.Where(type => type.ImplementedInterfaces
+                                                              //.Any(inter => inter == typeof(IMyImageConverterWithParams<IMyImage>)))
+                                           //.Select(x => x.GetType())
+                                           //.ToList();
+            //var converters = (from type in pluginAssembly.GetTypes()
+              //                where typeof(IMyImageConverterWithParams<IMyImage>).IsAssignableFrom(type) && !type.IsInterface
+//                              where typeof(MyImageConverter<IMyImage>).IsAssignableFrom(type)
+                //              select type).ToList();
+            foreach (Type converterType in converters)
+            {
+                var t = converterType.MakeGenericType(typeof(MyImage));
+                if (Activator.CreateInstance(t) is IMyImageConverterWithParams<MyImage> converter)
+                {
+                    CreateControls(converter);
+                    _converters.Add(converter.ConverterType, converter);
+                }
+            }
             var lst = new List<ListBoxItem>();
             foreach(var conv in _converters)
             {
-                lst.Add(new ListBoxItem {Name = conv.Value.Item1.Name, Value = conv.Value.Item1.ConverterType});
+                lst.Add(new ListBoxItem {Name = conv.Value.Name,
+                                         Value = conv.Value.ConverterType
+                                        });
             }
             lstConverts.DataSource = lst;
             lstConverts.DisplayMember = "Name";
             lstConverts.ValueMember = "Value";
-            txtC.Visible = false;
-            lblC.Visible = false;
-            txtGamma.Visible = false;
-            lblGamma.Visible = false;
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
@@ -103,11 +131,11 @@ namespace IntroWinForms
             using (Bitmap bitmap = new Bitmap(pbcSource.Image))
             {
                 var item = lstConverts.SelectedItem as ListBoxItem;
-                var converter = _converters[(ConverterEnum)item.Value].Item1;
+                var converter = _converters[(ConverterEnum)item.Value];
                 var dstbitmap = new Bitmap(pbcSource.Image);
                 try
                 {
-                    if (converter is IMyImageConverterWithParams<IMyImage> @default)
+                    if (converter is IMyImageConverterWithParams<MyImage> @default)
                     {
                         var cparams = new object[@default.NumberOfParams];
                         foreach (var param in @default.Controls)
@@ -123,7 +151,8 @@ namespace IntroWinForms
                                 }
                             }
                         }
-                        @default.Convert(new MyImage(bitmap), cparams);
+                        var img = @default.Convert(new MyImage(bitmap), cparams);
+                        img.ConvertTo(dstbitmap);
                     }
                     pbxDest.Image?.Dispose();
                     pbxDest.Image = dstbitmap;
@@ -155,14 +184,21 @@ namespace IntroWinForms
         private void lstConverts_SelectedIndexChanged(object sender, EventArgs e)
         {
             var item = lstConverts.SelectedItem as ListBoxItem;
-            var converter = _converters[(ConverterEnum)item.Value];
-            txtC.Visible = false;
-            lblC.Visible = false;
-            txtGamma.Visible = false;
-            lblGamma.Visible = false;
-            foreach (var control in converter.Item2)
+            var converter = _converters[(ConverterEnum) item.Value];
+            if (_currentConverter != null)
             {
-                control.Visible = true;
+                foreach (var control in _currentConverter.Controls)
+                {
+                    if (control is Control ctrl)
+                        ctrl.Visible = true;
+                }
+            }
+
+            _currentConverter = converter;
+            foreach (var control in converter.Controls)
+            {
+                if (control is Control ctrl)
+                    ctrl.Visible = true;
             }
         }
     }

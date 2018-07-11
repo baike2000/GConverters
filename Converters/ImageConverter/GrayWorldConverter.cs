@@ -9,7 +9,7 @@ using ConvertInterfaces;
 
 namespace Converters.ImageConverter
 {
-    public class GrayWorldConverter<T> : MyImageConverter<T>, IMyImageConverterWithParams<T> where T : IMyImage
+    public class GrayWorldConverter<T> : MyImageConverter<T>, IMyImageConverterWithParams<T> where T : IMyImage, new()
     {
         public GrayWorldConverter()
         {
