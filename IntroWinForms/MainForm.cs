@@ -45,6 +45,7 @@ namespace IntroWinForms
                 };
                 converter.Controls.AddRange(new Control[] {lbl, txtb});
             }
+
             PutControlsToPanel(converter.Controls.Select(x => x as Control).ToList());
         }
 
@@ -65,25 +66,12 @@ namespace IntroWinForms
 
         private void ListLoad()
         {
-            Assembly pluginAssembly = Assembly.GetAssembly(typeof(MyImageConverter<MyImage>));
-            var converters = new List<Type>();
-            foreach (var tp in pluginAssembly.DefinedTypes)
-            {
-                foreach (var intr in tp.ImplementedInterfaces)
-                {
-                    if (intr.ToString() == typeof(IMyImageConverterWithParams<>).ToString())
-                        converters.Add(tp);
-                }
-            }
-//            var converters = pluginAssembly.DefinedTypes
-                                           //.Where(type => type.ImplementedInterfaces
-                                                              //.Any(inter => inter == typeof(IMyImageConverterWithParams<IMyImage>)))
-                                           //.Select(x => x.GetType())
-                                           //.ToList();
-            //var converters = (from type in pluginAssembly.GetTypes()
-              //                where typeof(IMyImageConverterWithParams<IMyImage>).IsAssignableFrom(type) && !type.IsInterface
-//                              where typeof(MyImageConverter<IMyImage>).IsAssignableFrom(type)
-                //              select type).ToList();
+            var pluginAssembly = Assembly.GetAssembly(typeof(MyImageConverter<MyImage>));
+            var converters =
+                (from tp in pluginAssembly.DefinedTypes
+                    from intr in tp.ImplementedInterfaces
+                    where intr.ToString() == typeof(IMyImageConverterWithParams<>).ToString()
+                    select tp).Cast<Type>().ToList();
             foreach (Type converterType in converters)
             {
                 var t = converterType.MakeGenericType(typeof(MyImage));
@@ -93,13 +81,17 @@ namespace IntroWinForms
                     _converters.Add(converter.ConverterType, converter);
                 }
             }
+
             var lst = new List<ListBoxItem>();
-            foreach(var conv in _converters)
+            foreach (var conv in _converters)
             {
-                lst.Add(new ListBoxItem {Name = conv.Value.Name,
-                                         Value = conv.Value.ConverterType
-                                        });
+                lst.Add(new ListBoxItem
+                {
+                    Name = conv.Value.Name,
+                    Value = conv.Value.ConverterType
+                });
             }
+
             lstConverts.DataSource = lst;
             lstConverts.DisplayMember = "Name";
             lstConverts.ValueMember = "Value";
@@ -138,15 +130,14 @@ namespace IntroWinForms
                     if (converter is IMyImageConverterWithParams<MyImage> @default)
                     {
                         var cparams = new object[@default.NumberOfParams];
+                        int cnt = 0;
                         foreach (var param in @default.Controls)
                         {
-                            int cnt = 0;
                             if ((param is Control control))
                             {
                                 if (!control.Name.StartsWith("lbl"))
                                 {
-                                    var cnv = new StringConverter();
-                                    cparams[cnt] = cnv.ConvertTo(control.Text, @default.TypeOfParams);
+                                    cparams[cnt] = Convert.ChangeType(control.Text, @default.TypeOfParams);
                                     cnt++;
                                 }
                             }
@@ -190,7 +181,7 @@ namespace IntroWinForms
                 foreach (var control in _currentConverter.Controls)
                 {
                     if (control is Control ctrl)
-                        ctrl.Visible = true;
+                        ctrl.Visible = false;
                 }
             }
 

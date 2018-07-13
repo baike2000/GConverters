@@ -12,8 +12,6 @@ namespace ConvertInterfaces
         int Width { get; }
         int Height { get; }
         Color this[int row, int column] { get; set; }
-        Color Min { get; }
-        Color Max { get; }
         void ConvertTo<T>(T bitmap) where T : System.Drawing.Image;
     }
 }
