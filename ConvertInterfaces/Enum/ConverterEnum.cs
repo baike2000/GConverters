@@ -13,6 +13,7 @@ namespace ConvertInterfaces.Enum
         GrayWorld,
         NonLinear,
         Logaritm,
-        Binary
+        Binary,
+        Median
     }
 }
