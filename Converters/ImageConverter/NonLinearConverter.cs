@@ -32,14 +32,18 @@ namespace Converters.ImageConverter
                     throw new Exception("Параметры должны быть double");
             }
             var dst = new MyImage(source.Width, source.Height); ;
-            for (var i = 0; i < dst.Width; i++)
-            for (var j = 0; j < dst.Height; j++)
-            {
-                double dR = (double)prms[0] * Math.Pow(source[i, j].R, (double)prms[1]);
-                double dG = (double)prms[0] * Math.Pow(source[i, j].G, (double)prms[1]);
-                double dB = (double)prms[0] * Math.Pow(source[i, j].B, (double)prms[1]);
-                dst[i, j] = Color.FromArgb(Norm(dR), Norm(dG), Norm(dB));
-            }
+            Parallel.For(0, dst.Width, i =>
+                {
+                    Parallel.For(0, dst.Height, j =>
+                        {
+                            double dR = (double) prms[0] * Math.Pow(source[i, j].R, (double) prms[1]);
+                            double dG = (double) prms[0] * Math.Pow(source[i, j].G, (double) prms[1]);
+                            double dB = (double) prms[0] * Math.Pow(source[i, j].B, (double) prms[1]);
+                            dst[i, j] = Color.FromArgb(Norm(dR), Norm(dG), Norm(dB));
+                        }
+                    );
+                }
+            );
 
             object img = dst;
             return (T)img;

@@ -33,14 +33,16 @@ namespace Converters.ImageConverter
             if (Math.Abs(c) < 10e-9)
                 throw new BoundException<double>(c, "Параметер не может быть равен нулю");
             var dst = new MyImage(source.Width, source.Height); ;
-            for (int i = 0; i < dst.Width; i++)
-            for (int j = 0; j < dst.Height; j++)
+            Parallel.For(0, dst.Width, i =>
             {
-                double dR = c * Math.Log(1 + source[i, j].R);
-                double dG = c * Math.Log(1 + source[i, j].G);
-                double dB = c * Math.Log(1 + source[i, j].B);
-                dst[i, j] = Color.FromArgb(Norm(dR), Norm(dG), Norm(dB));
-            }
+                Parallel.For(0, dst.Height, j =>
+                {
+                    double dR = c * Math.Log(1 + source[i, j].R);
+                    double dG = c * Math.Log(1 + source[i, j].G);
+                    double dB = c * Math.Log(1 + source[i, j].B);
+                    dst[i, j] = Color.FromArgb(Norm(dR), Norm(dG), Norm(dB));
+                });
+            });
 
             object img = dst;
             return (T)img;

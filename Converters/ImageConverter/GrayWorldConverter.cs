@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Converters.Helpers;
 using Converters.Image;
 using ConvertInterfaces;
 
@@ -25,15 +26,19 @@ namespace Converters.ImageConverter
             var dist = new MyImage(source.Width, source.Height);
             double Ra = 0, Ba = 0, Ga = 0;
             double Avg = 0;
-            for (int i = 0; i < source.Width; i++)
+            object srcimg = source;
+            var tasks = new List<Task<double[]>>();
+            var ranges = DivRange.Divide(0, 0, source.Width, source.Height, 16);
+            foreach (var range in ranges)
             {
-                for (int j = 0; j < source.Height; j++)
-                {
-                    Color color = source[i, j];
-                    Ra += color.R;
-                    Ba += color.B;
-                    Ga += color.G;
-                }
+                tasks.Add(Task<double[]>.Factory.StartNew(() => GetSumRGB((MyImage) srcimg, dist, range[0], range[1],
+                    range[2], range[3])));
+            }
+            foreach (var ts in tasks)
+            {
+                Ra += ts.Result[0];
+                Ba += ts.Result[1];
+                Ga += ts.Result[2];
             }
 
             Ra = Ra / (source.Width * source.Height);
@@ -42,9 +47,9 @@ namespace Converters.ImageConverter
 
             Avg = (Ra + Ba + Ga) / 3;
 
-            for (int i = 0; i < source.Width; i++)
+            Parallel.For(0, source.Width, i =>
             {
-                for (int j = 0; j < source.Height; j++)
+                Parallel.For(0, source.Height, j =>
                 {
                     Color color = source[i, j];
                     Color newcolor =
@@ -53,10 +58,26 @@ namespace Converters.ImageConverter
                             Norm(color.G * Avg / Ga),
                             Norm(color.B * Avg / Ba));
                     dist[i, j] = newcolor;
-                }
-            }
+                });
+            });
             object img = dist;
             return (T)img;
+        }
+
+        private static double[] GetSumRGB(IMyImage source, IMyImage dist, int x1, int y1, int x2, int y2)
+        {
+            var res = new double[3];
+            for (int i = x1; i < x2; i++)
+            {
+                for (int j = y1; j < y2; j++)
+                {
+                    Color color = source[i, j];
+                    res[0] += color.R;
+                    res[1] += color.B;
+                    res[2] += color.G;
+                }
+            }
+            return res;
         }
     }
 }

@@ -36,14 +36,14 @@ namespace Converters.ImageConverter
             object img = dst;
             img = converter.Convert(source);
             dst = (MyImage)img;
-            for (int i = 0; i < source.Width; i++)
+            Parallel.For(0, source.Width, i =>
             {
-                for (int j = 0; j < source.Height; j++)
+                Parallel.For(0, source.Height, j =>
                 {
                     int rescolor = dst[i, j].R > bound ? 255 : 0;
                     dst[i, j] = Color.FromArgb(rescolor, rescolor, rescolor);
-                }
-            }
+                });
+            });
             img = dst;
             return (T)img;
         }
