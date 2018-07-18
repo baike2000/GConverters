@@ -14,6 +14,7 @@ namespace ConvertInterfaces.Enum
         NonLinear,
         Logaritm,
         Binary,
-        Median
+        Median,
+        LinearStrech
     }
 }

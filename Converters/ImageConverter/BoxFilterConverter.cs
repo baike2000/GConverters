@@ -42,24 +42,15 @@ namespace Converters.ImageConverter
                             for (int y = -k / 2; y < k / 2; y++)
                             {
                                 int cx = i + x;
-                                if (i + x < 0)
-                                {
-                                    cx = i;
-                                }
-                                if (i + x >= dst.Width)
+                                if (i + x < 0 || i + x >= dst.Width)
                                 {
                                     cx = i;
                                 }
                                 int cy = j + y;
-                                if (j + y < 0)
+                                if (j + y < 0 || j + y >= dst.Height)
                                 {
                                     cy = j;
                                 }
-                                if (j + y >= dst.Height)
-                                {
-                                    cy = j;
-                                }
-
                                 filter.Add(source[cx, cy]);
                             }
                         }

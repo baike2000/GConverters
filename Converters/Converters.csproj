@@ -47,6 +47,7 @@
     <Compile Include="ImageConverter\BinaryConverter.cs" />
     <Compile Include="ImageConverter\BoxFilterConverter.cs" />
     <Compile Include="ImageConverter\GrayscaleConverter.cs" />
+    <Compile Include="ImageConverter\LinearStrechConverter.cs" />
     <Compile Include="ImageConverter\GrayWorldConverter.cs" />
     <Compile Include="ImageConverter\LogarithmConverter.cs" />
     <Compile Include="ImageConverter\MyImageConverter.cs" />

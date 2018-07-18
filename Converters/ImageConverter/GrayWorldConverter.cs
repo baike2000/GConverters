@@ -31,7 +31,7 @@ namespace Converters.ImageConverter
             var ranges = DivRange.Divide(0, 0, source.Width, source.Height, 16);
             foreach (var range in ranges)
             {
-                tasks.Add(Task<double[]>.Factory.StartNew(() => GetSumRGB((MyImage) srcimg, dist, range[0], range[1],
+                tasks.Add(Task<double[]>.Factory.StartNew(() => GetSumRgb((MyImage) srcimg, range[0], range[1],
                     range[2], range[3])));
             }
             foreach (var ts in tasks)
@@ -64,14 +64,14 @@ namespace Converters.ImageConverter
             return (T)img;
         }
 
-        private static double[] GetSumRGB(IMyImage source, IMyImage dist, int x1, int y1, int x2, int y2)
+        private static double[] GetSumRgb(IMyImage source, int x1, int y1, int x2, int y2)
         {
             var res = new double[3];
-            for (int i = x1; i < x2; i++)
+            for (var i = x1; i < x2; i++)
             {
-                for (int j = y1; j < y2; j++)
+                for (var j = y1; j < y2; j++)
                 {
-                    Color color = source[i, j];
+                    var color = source[i, j];
                     res[0] += color.R;
                     res[1] += color.B;
                     res[2] += color.G;
